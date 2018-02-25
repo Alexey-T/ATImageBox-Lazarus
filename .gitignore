@@ -1,2 +1,4 @@
 demo/demo
 lib/
+*.lps
+*.exe

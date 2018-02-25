@@ -1,6 +1,6 @@
 // ATImageBox for Lazarus
 // Copyright (C) Alexey Torgashin
-// http://www.uvviewsoft.com
+// uvviewsoft.com
 
 unit ATImageBox;
 
@@ -392,6 +392,9 @@ var
   ARatio, AImageRatio,
   ACenterRatioX, ACenterRatioY: Double;
 begin
+  if FBusyResize then exit;
+  FBusyResize := true;
+
   AKeepPosition := FImageKeepPosition and (not AResetPosition);
 
   AWidth := ClientWidth;
@@ -555,6 +558,7 @@ begin
   VertScrollbar.Range := ANewHeight;
 
   DoScroll;
+  FBusyResize := false;
 end;
 
 procedure TATImageBox.SetImageFit(AValue: Boolean);
@@ -605,12 +609,9 @@ end;
 
 procedure TATImageBox.Resize;
 begin
-  if FBusyResize then exit;
-  FBusyResize := true;
   inherited;
   if Assigned(FImage) then
     UpdateImagePosition;
-  FBusyResize := false;
 end;
 
 procedure TATImageBox.SetImageScale(AValue: Integer);

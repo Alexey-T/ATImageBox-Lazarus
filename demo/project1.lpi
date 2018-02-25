@@ -44,6 +44,7 @@
       <Unit2>
         <Filename Value="../atimagebox/atimagebox.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ATImageBox"/>
       </Unit2>
     </Units>
   </ProjectOptions>
