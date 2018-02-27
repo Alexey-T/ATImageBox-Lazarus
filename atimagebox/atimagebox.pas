@@ -29,6 +29,9 @@ type
   TATScrollAltEvent = procedure(Sender: TObject; Inc: Boolean) of object;
 
 type
+
+  { TATImageBox }
+
   TATImageBox = class(TScrollBox)
   private
     FFocusable: Boolean;
@@ -84,8 +87,8 @@ type
     property ImageScale: Integer read FImageScale write SetImageScale;
 
   protected
-    procedure WMHScroll(var Msg: TLMessage); message LM_HSCROLL;
-    procedure WMVScroll(var Msg: TLMessage); message LM_VSCROLL;
+    procedure WMHScroll(var Message: TLMHScroll); message LM_HScroll;
+    procedure WMVScroll(var Message: TLMVScroll); message LM_VScroll;
     procedure WMGetDlgCode(var Message: TLMessage); message LM_GETDLGCODE;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Resize; override;
@@ -173,13 +176,13 @@ begin
     FOnScrollAlt(Self, AInc);
 end;
 
-procedure TATImageBox.WMHScroll(var Msg: TLMessage);
+procedure TATImageBox.WMHScroll(var Message: TLMHScroll);
 begin
   inherited;
   DoScroll;
 end;
 
-procedure TATImageBox.WMVScroll(var Msg: TLMessage);
+procedure TATImageBox.WMVScroll(var Message: TLMVScroll);
 begin
   inherited;
   DoScroll;
