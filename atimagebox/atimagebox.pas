@@ -51,10 +51,13 @@ type
     FImageDragging: Boolean;
     FImageDraggingPoint: TPoint;
     FImageMouseDown: Boolean;
-    FBusyResize: boolean;
     FOnScroll: TNotifyEvent;
     FOnScrollAlt: TATScrollAltEvent;
     FOnOptionsChange: TNotifyEvent;
+    FOldLeft: integer;
+    FOldTop: integer;
+    FOldWidth: integer;
+    FOldHeight: integer;
     procedure DoScroll;
     procedure DoScrollAlt(AInc: Boolean);
     procedure DoOptionsChange;
@@ -395,9 +398,6 @@ var
   ARatio, AImageRatio,
   ACenterRatioX, ACenterRatioY: Double;
 begin
-  if FBusyResize then exit;
-  FBusyResize := true;
-
   AKeepPosition := FImageKeepPosition and (not AResetPosition);
 
   AWidth := ClientWidth;
@@ -528,11 +528,21 @@ begin
       ANewTop := (AHeight - ANewHeight) div 2;
   end;
 
-  FImage.SetBounds(
-    ANewLeft - HorzScrollBar.Position,
-    ANewTop - VertScrollBar.Position,
-    ANewWidth,
-    ANewHeight);
+  if (FOldLeft<>ANewLeft - HorzScrollBar.Position) or
+    (FOldTop<>ANewTop - VertScrollBar.Position) or
+    (FOldWidth<>ANewWidth) or
+    (FOldHeight<>ANewHeight) then
+  begin
+    FOldLeft:= ANewLeft - HorzScrollBar.Position;
+    FOldTop:= ANewTop - VertScrollBar.Position;
+    FOldWidth:= ANewWidth;
+    FOldHeight:= ANewHeight;
+    FImage.SetBounds(
+      FOldLeft,
+      FOldTop,
+      FOldWidth,
+      FOldHeight);
+  end;
 
   //Restore saved center position
   if AKeepPosition then
@@ -561,7 +571,6 @@ begin
   VertScrollbar.Range := ANewHeight;
 
   DoScroll;
-  FBusyResize := false;
 end;
 
 procedure TATImageBox.SetImageFit(AValue: Boolean);
