@@ -1,6 +1,8 @@
-// ATImageBox for Lazarus
-// Copyright (C) Alexey Torgashin
-// uvviewsoft.com
+{
+ATImageBox for Lazarus
+Copyright (C) Alexey Torgashin, uvviewsoft.com
+License: MPL 2.0
+}
 
 unit ATImageBox;
 
