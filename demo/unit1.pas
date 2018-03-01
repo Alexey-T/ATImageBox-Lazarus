@@ -46,7 +46,7 @@ begin
   box:= TATImageBox.Create(Self);
   box.Parent:= Panel1;
   box.Align:= alClient;
-  box.ImageCenter:= true;
+  box.OptCenter:= true;
   box.LoadFromFile(ExtractFilePath(Application.ExeName)+'test.jpg');
   box.OnScroll:= @UpdateStatus;
 end;
@@ -58,12 +58,12 @@ end;
 
 procedure TForm1.chkFitToWindowChange(Sender: TObject);
 begin
-  box.ImageFitToWindow:= chkFitToWindow.Checked;
+  box.OptFitToWindow:= chkFitToWindow.Checked;
 end;
 
 procedure TForm1.chkCenterChange(Sender: TObject);
 begin
-  box.ImageCenter:= chkCenter.Checked;
+  box.OptCenter:= chkCenter.Checked;
 end;
 
 procedure TForm1.btnOpenClick(Sender: TObject);
@@ -76,7 +76,7 @@ end;
 
 procedure TForm1.chkFitBigChange(Sender: TObject);
 begin
-  box.ImageFitOnlyBig:= chkFitBig.Checked;
+  box.OptFitOnlyBig:= chkFitBig.Checked;
 end;
 
 end.

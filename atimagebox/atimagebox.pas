@@ -98,16 +98,16 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
 
   published
-    property Focusable: Boolean read FFocusable write FFocusable default True;
-    property ImageFitToWindow: Boolean read FImageFit write SetImageFit default False;
-    property ImageFitOnlyBig: Boolean read FImageFitOnlyBig write SetImageFitOnlyBig default True;
-    property ImageFitWidth: Boolean read FImageFitWidth write SetImageFitWidth default False;
-    property ImageFitHeight: Boolean read FImageFitHeight write SetImageFitHeight default False;
-    property ImageCenter: Boolean read FImageCenter write SetImageCenter default True;
-    property ImageKeepPosition: Boolean read FImageKeepPosition write FImageKeepPosition default True;
-    property ImageDrag: Boolean read FImageDrag write FImageDrag default True;
-    property ImageDragCursor: TCursor read FImageDragCursor write FImageDragCursor default crSizeAll;
-    property ImageScaleCursor: TCursor read FImageScaleCursor write FImageScaleCursor default crSizeNS;
+    property OptFocusable: Boolean read FFocusable write FFocusable default True;
+    property OptFitToWindow: Boolean read FImageFit write SetImageFit default False;
+    property OptFitOnlyBig: Boolean read FImageFitOnlyBig write SetImageFitOnlyBig default True;
+    property OptFitWidth: Boolean read FImageFitWidth write SetImageFitWidth default False;
+    property OptFitHeight: Boolean read FImageFitHeight write SetImageFitHeight default False;
+    property OptCenter: Boolean read FImageCenter write SetImageCenter default True;
+    property OptKeepPosition: Boolean read FImageKeepPosition write FImageKeepPosition default True;
+    property OptDrag: Boolean read FImageDrag write FImageDrag default True;
+    property OptCursorDrag: TCursor read FImageDragCursor write FImageDragCursor default crSizeAll;
+    property OptCursorScale: TCursor read FImageScaleCursor write FImageScaleCursor default crSizeNS;
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
     property OnScrollAlt: TATScrollAltEvent read FOnScrollAlt write FOnScrollAlt;
     property OnOptionsChange: TNotifyEvent read FOnOptionsChange write FOnOptionsChange;
