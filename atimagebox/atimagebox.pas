@@ -17,7 +17,6 @@ uses
   Math;
 
 const
-  cViewerDefaultResampleDelay = 300;
   cViewerImageScales: array[1 .. 33] of Integer = (
     1, 2, 4, 7, 10, 15, 20, 25, 30,
     40, 50, 60, 70, 80, 90, 100,
@@ -51,9 +50,13 @@ type
     FImageDragging: Boolean;
     FImageDraggingPoint: TPoint;
     FImageMouseDown: Boolean;
+    FKeyModifierZoom: TShiftStateEnum;
+    FKeyModifierHorzScroll: TShiftStateEnum;
+
     FOnScroll: TNotifyEvent;
     FOnScrollAlt: TATScrollAltEvent;
     FOnOptionsChange: TNotifyEvent;
+
     FOldLeft: integer;
     FOldTop: integer;
     FOldWidth: integer;
@@ -78,6 +81,7 @@ type
     procedure ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure LoadFromFile(const FN: string);
@@ -111,6 +115,9 @@ type
     property OptDrag: Boolean read FImageDrag write FImageDrag default True;
     property OptCursorDrag: TCursor read FImageDragCursor write FImageDragCursor default crSizeAll;
     property OptCursorScale: TCursor read FImageScaleCursor write FImageScaleCursor default crSizeNS;
+    property OptKeyModifierZoom: TShiftStateEnum read FKeyModifierZoom write FKeyModifierZoom default ssModifier;
+    property OptKeyModifierHorzScroll: TShiftStateEnum read FKeyModifierHorzScroll write FKeyModifierHorzScroll default ssShift;
+
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
     property OnScrollAlt: TATScrollAltEvent read FOnScrollAlt write FOnScrollAlt;
     property OnOptionsChange: TNotifyEvent read FOnOptionsChange write FOnOptionsChange;
@@ -153,6 +160,9 @@ begin
   FImageDragging := False;
   FImageDraggingPoint := Point(0, 0);
   FImageMouseDown := False;
+
+  FKeyModifierZoom:= ssModifier;
+  FKeyModifierHorzScroll:= ssShift;
 
   FImage := TImage.Create(Self);
   with FImage do
@@ -204,14 +214,14 @@ begin
     DoScroll;
   end
   else
-  if (Shift = [ssShift]) then
+  if (Shift = [FKeyModifierHorzScroll]) then
   begin
     with HorzScrollBar do
       Position := Position - cImageLineSize;
     DoScroll;
   end
   else
-  if (Shift = [ssCtrl]) or FImageMouseDown then
+  if (Shift = [FKeyModifierZoom]) or FImageMouseDown then
   begin
     IncreaseImageScale(True);
     FImageDragging := False;
@@ -232,14 +242,14 @@ begin
     DoScroll;
   end
   else
-  if (Shift = [ssShift]) then
+  if (Shift = [FKeyModifierHorzScroll]) then
   begin
     with HorzScrollBar do
       Position := Position + cImageLineSize;
     DoScroll;
   end
   else
-  if (Shift = [ssCtrl]) or FImageMouseDown then
+  if (Shift = [FKeyModifierZoom]) or FImageMouseDown then
   begin
     IncreaseImageScale(False);
     FImageDragging := False;
