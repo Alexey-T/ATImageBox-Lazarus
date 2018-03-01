@@ -46,6 +46,8 @@ begin
   box:= TATImageBox.Create(Self);
   box.Parent:= Panel1;
   box.Align:= alClient;
+  box.Color:= clMedGray;
+  box.BorderStyle:= bsNone;
   box.OptCenter:= true;
   box.LoadFromFile(ExtractFilePath(Application.ExeName)+'test.jpg');
   box.OnScroll:= @UpdateStatus;
@@ -53,8 +55,7 @@ end;
 
 procedure TForm1.UpdateStatus(Sender: TObject);
 begin
-  LabelStatus.Caption:= IntToStr(box.ImageScale)+'%'+
-    Format(', pos %d,%d', [box.Image.Left, box.Image.Top]);
+  LabelStatus.Caption:= IntToStr(box.ImageScale)+'%';
 end;
 
 procedure TForm1.chkFitToWindowChange(Sender: TObject);

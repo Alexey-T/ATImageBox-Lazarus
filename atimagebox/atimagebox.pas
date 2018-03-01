@@ -403,8 +403,8 @@ var
 begin
   AKeepPosition := FImageKeepPosition and (not AResetPosition);
 
-  AWidth := ClientWidth;
-  AHeight := ClientHeight;
+  AWidth := Width;
+  AHeight := Height;
 
   //Save center position, need to restore it later
   ACenterRatioX := 0;
@@ -536,9 +536,6 @@ begin
     (FOldWidth<>ANewWidth) or
     (FOldHeight<>ANewHeight) then
   begin
-    if Application.Mainform<>nil then
-      APplication.Mainform.caption:= Format('%d,%d', [FOldLeft, FOldTop]);
-
     FOldLeft:= ANewLeft - HorzScrollBar.Position;
     FOldTop:= ANewTop - VertScrollBar.Position;
     FOldWidth:= ANewWidth;
