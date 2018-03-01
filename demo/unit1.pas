@@ -53,7 +53,8 @@ end;
 
 procedure TForm1.UpdateStatus(Sender: TObject);
 begin
-  LabelStatus.Caption:= IntToStr(box.ImageScale)+'%';
+  LabelStatus.Caption:= IntToStr(box.ImageScale)+'%'+
+    Format(', pos %d,%d', [box.Image.Left, box.Image.Top]);
 end;
 
 procedure TForm1.chkFitToWindowChange(Sender: TObject);
