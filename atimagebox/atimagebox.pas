@@ -83,6 +83,7 @@ type
     procedure ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure ImagePanelPaint(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -132,6 +133,25 @@ const
   cImageLineSize = 50; //Line size: pixels to scroll by arrows and mouse sheel
   cImageGapSize = 20; //Gap size: PgUp/PgDn/Home/End scroll by control size minus gap size
 
+procedure DoPaintCheckers(C: TCanvas;
+  ASizeX, ASizeY: integer;
+  ACellSize: integer;
+  AColor1, AColor2: TColor);
+var
+  i, j: integer;
+begin
+  c.Brush.Color:= AColor1;
+  c.FillRect(0, 0, ASizeX, ASizeY);
+
+  for i:= 0 to ASizeX div ACellSize + 1 do
+    for j:= 0 to ASizeY div ACellSize + 1 do
+      if odd(i) xor odd(j) then
+      begin
+        c.Brush.Color:= AColor2;
+        c.FillRect(i*ACellSize, j*ACellSize, (i+1)*ACellSize, (j+1)*ACellSize);
+      end;
+end;
+
 
 { TATImageBox }
 
@@ -175,6 +195,7 @@ begin
     OnMouseDown := @ImageMouseDown;
     OnMouseUp := @ImageMouseUp;
     OnMouseMove := @ImageMouseMove;
+    OnPaintBackground := @ImagePanelPaint;
   end;
 
   //Init event handlers
@@ -792,5 +813,16 @@ begin
   Result := FImage.Picture;
 end;
 
+procedure TATImageBox.ImagePanelPaint(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
+begin
+  DoPaintCheckers(
+    ACanvas,
+    ARect.Right-ARect.Left,
+    ARect.Bottom-ARect.Top,
+    8,
+    clWhite,
+    clLtGray
+    );
+end;
 
 end.
