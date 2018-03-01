@@ -43,7 +43,9 @@ object Form1: TForm1
       Top = 48
       Width = 107
       Caption = 'Center image'
+      Checked = True
       OnChange = chkCenterChange
+      State = cbChecked
       TabOrder = 2
     end
     object chkFitBig: TCheckBox
@@ -52,7 +54,9 @@ object Form1: TForm1
       Top = 24
       Width = 133
       Caption = 'Fit only big image'
+      Checked = True
       OnChange = chkFitBigChange
+      State = cbChecked
       TabOrder = 1
     end
     object LabelStatus: TLabel

@@ -58,6 +58,9 @@ type
     FOldTop: integer;
     FOldWidth: integer;
     FOldHeight: integer;
+    FOldSelfW: integer;
+    FOldSelfH: integer;
+
     procedure DoScroll;
     procedure DoScrollAlt(AInc: Boolean);
     procedure DoOptionsChange;
@@ -625,8 +628,13 @@ end;
 procedure TATImageBox.Resize;
 begin
   inherited;
-  if Assigned(FImage) then
+  if Assigned(FImage) and
+    ((FOldSelfW <> Self.Width) or (FOldSelfH <> Self.Height)) then
+  begin
+    FOldSelfW := Self.Width;
+    FOldSelfH := Self.Height;
     UpdateImagePosition;
+  end;
 end;
 
 procedure TATImageBox.SetImageScale(AValue: Integer);
