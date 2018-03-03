@@ -174,13 +174,11 @@ constructor TATImageBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  //Init inherited properties
   AutoScroll:= False;
-  DoubleBuffered:= True; //To remove flicker when new image is loaded
+  DoubleBuffered:= True;
   HorzScrollBar.Tracking:= True;
   VertScrollBar.Tracking:= True;
 
-  //Init fields
   FFocusable:= True;
   FImageFit:= False;
   FImageFitOnlyBig:= True;
@@ -219,7 +217,6 @@ begin
     OnPaintBackground:= @ImagePaintBackground;
   end;
 
-  //Init event handlers
   OnMouseWheelUp:= @MouseWheelUp;
   OnMouseWheelDown:= @MouseWheelDown;
 
@@ -228,7 +225,7 @@ begin
     Kind:= sbVertical;
     FInitScrollbarSize:= Width;
   finally
-    Free
+    Free;
   end;
 end;
 
@@ -539,18 +536,6 @@ begin
 
   FImage.AutoSize:= (not FImageFit) and (FImageZoom = 100);
   FImage.Stretch:= not FImage.AutoSize;
-
-  {
-  //Note: commented, because we convert icon to bitmap in UpdateInfo.
-  //Work around VCL draw bug for icons:
-  if FImageIsIcon then
-    begin
-    FImage.AutoSize:= False;
-    FImage.Stretch:= True;
-    FImage.Width:= FImageWidth;
-    FImage.Height:= FImageHeight;
-    end;
-    }
 
   //Fit and recalculate ImageZoom
   if FImageFit then
