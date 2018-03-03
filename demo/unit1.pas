@@ -17,7 +17,7 @@ type
     chkFitToWindow: TCheckBox;
     chkCenter: TCheckBox;
     LabelStatus: TLabel;
-    OpenPictureDialog1: TOpenPictureDialog;
+    Dlg: TOpenPictureDialog;
     Panel1: TPanel;
     Panel2: TPanel;
     procedure btnOpenClick(Sender: TObject);
@@ -27,6 +27,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     box: TATImagebox;
+    FDirImages: string;
     procedure UpdateStatus(Sender: TObject);
   public
 
@@ -42,6 +43,8 @@ implementation
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  fn: string;
 begin
   box:= TATImageBox.Create(Self);
   box.Parent:= Panel1;
@@ -49,8 +52,12 @@ begin
   box.Color:= clMedGray;
   box.BorderStyle:= bsNone;
   box.OptCenter:= true;
-  box.LoadFromFile(ExtractFilePath(Application.ExeName)+'test.jpg');
   box.OnScroll:= @UpdateStatus;
+
+  FDirImages:= ExtractFilePath(Application.ExeName)+DirectorySeparator+'images';
+  fn:= FDirImages+DirectorySeparator+'test.jpg';
+  if FileExists(fn) then
+    box.LoadFromFile(fn);
 end;
 
 procedure TForm1.UpdateStatus(Sender: TObject);
@@ -70,9 +77,10 @@ end;
 
 procedure TForm1.btnOpenClick(Sender: TObject);
 begin
-  if OpenPictureDialog1.Execute then
+  Dlg.InitialDir:= FDirImages;
+  if Dlg.Execute then
   begin
-    box.LoadFromFile(OpenPictureDialog1.FileName);
+    box.LoadFromFile(Dlg.FileName);
   end;
 end;
 
