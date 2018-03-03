@@ -93,6 +93,8 @@ type
     procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
+    function GetPicture: TPicture;
+    procedure SetPicture(AValue: TPicture);
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -101,7 +103,6 @@ type
     procedure LoadPicture(APicture: TPicture);
     procedure Unload;
     procedure UpdateInfo;
-    function CurrentPicture: TPicture;
     procedure IncreaseImageScale(AIncrement: Boolean);
     property Image: TImage read FImage;
     property ImageWidth: Integer read FImageWidth;
@@ -115,8 +116,10 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Loaded; override;
 
   published
+    property Picture: TPicture read GetPicture write SetPicture;
     property OptFocusable: Boolean read FFocusable write FFocusable default True;
     property OptFitToWindow: Boolean read FImageFit write SetImageFit default False;
     property OptFitOnlyBig: Boolean read FImageFitOnlyBig write SetImageFitOnlyBig default True;
@@ -209,6 +212,7 @@ begin
   begin
     Parent:= Self;
     Align:= alNone;
+    SetBounds(0, 0, 100, 100);
     AutoSize:= False;
     OnMouseDown:= @ImageMouseDown;
     OnMouseUp:= @ImageMouseUp;
@@ -751,6 +755,13 @@ begin
     SetFocus;
 end;
 
+procedure TATImageBox.Loaded;
+begin
+  inherited;
+  UpdateInfo;
+  UpdateImagePosition(true);
+end;
+
 procedure TATImageBox.ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if FFocusable then
@@ -869,9 +880,15 @@ begin
   UpdateInfo;
 end;
 
-function TATImageBox.CurrentPicture: TPicture;
+function TATImageBox.GetPicture: TPicture;
 begin
   Result:= FImage.Picture;
+end;
+
+procedure TATImageBox.SetPicture(AValue: TPicture);
+begin
+  LoadPicture(AValue);
+  UpdateImagePosition(true);
 end;
 
 procedure TATImageBox.ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
