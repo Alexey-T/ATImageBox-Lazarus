@@ -52,6 +52,7 @@ type
     FMouseDown: boolean;
     FModifierMouseZoom: TShiftStateEnum;
     FModifierMouseHorzScroll: TShiftStateEnum;
+    FModifierArrowsToEdge: TShiftStateEnum;
     FInitScrollbarSize: integer;
     FCheckers: boolean;
     FCheckersSize: integer;
@@ -131,6 +132,7 @@ type
     property OptDrag: boolean read FDrag write FDrag default True;
     property OptModifierMouseZoom: TShiftStateEnum read FModifierMouseZoom write FModifierMouseZoom default ssModifier;
     property OptModifierMouseHorzScroll: TShiftStateEnum read FModifierMouseHorzScroll write FModifierMouseHorzScroll default ssShift;
+    property OptModifierArrowsToEdge: TShiftStateEnum read FModifierArrowsToEdge write FModifierArrowsToEdge default ssModifier;
     property OptCheckers: boolean read FCheckers write SetCheckers default true;
     property OptChechersSize: integer read FCheckersSize write SetCheckersSize default 8;
     property OptCheckersColor1: TColor read FCheckersColor1 write SetCheckersColor1 default clWhite;
@@ -196,6 +198,7 @@ begin
 
   FModifierMouseZoom:= ssModifier;
   FModifierMouseHorzScroll:= ssShift;
+  FModifierArrowsToEdge:= ssModifier;
 
   FCheckers:= true;
   FCheckersSize:= 8;
@@ -365,7 +368,7 @@ begin
         Key:= 0;
       end
       else
-      if Shift = [ssCtrl] then
+      if Shift = [FModifierArrowsToEdge] then
       begin
         with HorzScrollBar do
           Position:= 0;
@@ -390,7 +393,7 @@ begin
         Key:= 0;
       end
       else
-      if Shift = [ssCtrl] then
+      if Shift = [FModifierArrowsToEdge] then
       begin
         with HorzScrollBar do
           Position:= Range;
@@ -433,7 +436,7 @@ begin
         Key:= 0;
       end
       else
-      if Shift = [ssCtrl] then
+      if Shift = [FModifierArrowsToEdge] then
       begin
         with VertScrollBar do
           Position:= 0;
@@ -452,7 +455,7 @@ begin
         Key:= 0;
       end
       else
-      if Shift = [ssCtrl] then
+      if Shift = [FModifierArrowsToEdge] then
       begin
         with VertScrollBar do
           Position:= Range;
