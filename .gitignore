@@ -1,4 +1,5 @@
-demo/demo
 lib/
 *.lps
 *.exe
+*.dbg
+project1
