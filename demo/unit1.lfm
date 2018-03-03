@@ -1,17 +1,17 @@
 object Form1: TForm1
   Left = 319
-  Height = 364
+  Height = 418
   Top = 188
   Width = 621
   Caption = 'ATImageBox test'
-  ClientHeight = 364
+  ClientHeight = 418
   ClientWidth = 621
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   object Panel1: TPanel
     Left = 0
-    Height = 288
+    Height = 342
     Top = 0
     Width = 621
     Align = alClient
@@ -21,7 +21,7 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 0
     Height = 76
-    Top = 288
+    Top = 342
     Width = 621
     Align = alBottom
     BevelOuter = bvNone
@@ -34,7 +34,9 @@ object Form1: TForm1
       Top = 0
       Width = 147
       Caption = 'Fit image to window'
+      Checked = True
       OnChange = chkFitToWindowChange
+      State = cbChecked
       TabOrder = 0
     end
     object chkCenter: TCheckBox

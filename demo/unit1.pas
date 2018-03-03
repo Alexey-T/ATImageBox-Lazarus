@@ -55,6 +55,7 @@ begin
   box.Align:= alClient;
   box.Color:= clMedGray;
   box.BorderStyle:= bsNone;
+  box.OptFitToWindow:= true;
   box.OptCenter:= true;
   box.OnScroll:= @UpdateStatus;
 
