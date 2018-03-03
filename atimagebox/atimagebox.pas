@@ -138,7 +138,7 @@ type
     property OptCheckersColor1: TColor read FCheckersColor1 write SetCheckersColor1 default clWhite;
     property OptCheckersColor2: TColor read FCheckersColor2 write SetCheckersColor2 default clLtGray;
     property OptScrollSmallStep: integer read FScrollSmallStep write FScrollSmallStep default 50;
-    property OptScrollGapSize: integer read FScrollGapSize write FScrollGapSize default 20;
+    property OptScrollBigStepDecrement: integer read FScrollGapSize write FScrollGapSize default 20;
 
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
     property OnOptionsChange: TNotifyEvent read FOnOptionsChange write FOnOptionsChange;
