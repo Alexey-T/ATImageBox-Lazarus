@@ -19,7 +19,7 @@ uses
   Math;
 
 const
-  cViewerImageScales: array[1..33] of integer = (
+  cImageboxZooms: array[1..33] of integer = (
     1, 2, 4, 7, 10, 15, 20, 25, 30,
     40, 50, 60, 70, 80, 90, 100,
     125, 150, 175, 200, 250, 300, 350, 400, 450, 500,
@@ -44,16 +44,16 @@ type
     FImageFitWidth,
     FImageFitHeight,
     FImageCenter: boolean;
-    FImageScale: integer;
+    FImageZoom: integer;
     FImageKeepPosition: boolean;
-    FImageDrag: boolean;
-    FImageDragCursor: TCursor;
-    FImageScaleCursor: TCursor;
-    FImageDragging: boolean;
-    FImageDraggingPoint: TPoint;
-    FImageMouseDown: boolean;
-    FKeyModifierZoom: TShiftStateEnum;
-    FKeyModifierHorzScroll: TShiftStateEnum;
+    FCursorDrag: TCursor;
+    FCursorZoom: TCursor;
+    FDrag: boolean;
+    FDragging: boolean;
+    FDraggingPoint: TPoint;
+    FMouseDown: boolean;
+    FModifierMouseZoom: TShiftStateEnum;
+    FModifierMouseHorzScroll: TShiftStateEnum;
     FInitScrollbarSize: integer;
     FCheckers: boolean;
     FCheckersSize: integer;
@@ -71,7 +71,6 @@ type
     FOldSelfW: integer;
     FOldSelfH: integer;
 
-    procedure SetCheckers(AValue: boolean);
     procedure DoScroll;
     procedure DoScrollAlt(AInc: boolean);
     procedure DoOptionsChange;
@@ -79,6 +78,7 @@ type
       MousePos: TPoint; var Handled: boolean);
     procedure MouseWheelDown(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: boolean);
+    procedure SetCheckers(AValue: boolean);
     procedure SetCheckersColor1(AValue: TColor);
     procedure SetCheckersColor2(AValue: TColor);
     procedure SetCheckersSize(AValue: integer);
@@ -88,7 +88,7 @@ type
     procedure SetImageFitWidth(AValue: boolean);
     procedure SetImageFitHeight(AValue: boolean);
     procedure SetImageCenter(AValue: boolean);
-    procedure SetImageScale(AValue: integer);
+    procedure SetImageZoom(AValue: integer);
     procedure ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
     procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
     procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
@@ -102,11 +102,11 @@ type
     procedure LoadPicture(APicture: TPicture);
     procedure Clear;
     procedure UpdateInfo;
-    procedure IncreaseImageScale(AIncrement: boolean);
+    procedure IncreaseImageZoom(AIncrement: boolean);
     property Image: TImage read FImage;
     property ImageWidth: integer read FImageWidth;
     property ImageHeight: integer read FImageHeight;
-    property ImageScale: integer read FImageScale write SetImageScale;
+    property ImageZoom: integer read FImageZoom write SetImageZoom;
 
   protected
     procedure WMHScroll(var Message: TLMHScroll); message LM_HScroll;
@@ -119,6 +119,8 @@ type
 
   published
     property Picture: TPicture read GetPicture write LoadPicture;
+    property CursorDrag: TCursor read FCursorDrag write FCursorDrag default crSizeAll;
+    property CursorZoom: TCursor read FCursorZoom write FCursorZoom default crSizeNS;
     property OptFocusable: boolean read FFocusable write FFocusable default True;
     property OptFitToWindow: boolean read FImageFit write SetImageFit default False;
     property OptFitOnlyBig: boolean read FImageFitOnlyBig write SetImageFitOnlyBig default True;
@@ -126,11 +128,9 @@ type
     property OptFitHeight: boolean read FImageFitHeight write SetImageFitHeight default False;
     property OptCenter: boolean read FImageCenter write SetImageCenter default True;
     property OptKeepPosition: boolean read FImageKeepPosition write FImageKeepPosition default True;
-    property OptDrag: boolean read FImageDrag write FImageDrag default True;
-    property OptCursorDrag: TCursor read FImageDragCursor write FImageDragCursor default crSizeAll;
-    property OptCursorScale: TCursor read FImageScaleCursor write FImageScaleCursor default crSizeNS;
-    property OptKeyModifierZoom: TShiftStateEnum read FKeyModifierZoom write FKeyModifierZoom default ssModifier;
-    property OptKeyModifierHorzScroll: TShiftStateEnum read FKeyModifierHorzScroll write FKeyModifierHorzScroll default ssShift;
+    property OptDrag: boolean read FDrag write FDrag default True;
+    property OptModifierMouseZoom: TShiftStateEnum read FModifierMouseZoom write FModifierMouseZoom default ssModifier;
+    property OptModifierMouseHorzScroll: TShiftStateEnum read FModifierMouseHorzScroll write FModifierMouseHorzScroll default ssShift;
     property OptCheckers: boolean read FCheckers write SetCheckers default true;
     property OptChechersSize: integer read FCheckersSize write SetCheckersSize default 8;
     property OptCheckersColor1: TColor read FCheckersColor1 write SetCheckersColor1 default clWhite;
@@ -189,17 +189,17 @@ begin
   FImageCenter:= True;
   FImageWidth:= 0;
   FImageHeight:= 0;
-  FImageScale:= 100;
+  FImageZoom:= 100;
   FImageKeepPosition:= True;
-  FImageDrag:= True;
-  FImageDragCursor:= crSizeAll;
-  FImageScaleCursor:= crSizeNS;
-  FImageDragging:= False;
-  FImageDraggingPoint:= Point(0, 0);
-  FImageMouseDown:= False;
+  FDrag:= True;
+  FCursorDrag:= crSizeAll;
+  FCursorZoom:= crSizeNS;
+  FDragging:= False;
+  FDraggingPoint:= Point(0, 0);
+  FMouseDown:= False;
 
-  FKeyModifierZoom:= ssModifier;
-  FKeyModifierHorzScroll:= ssShift;
+  FModifierMouseZoom:= ssModifier;
+  FModifierMouseHorzScroll:= ssShift;
 
   FCheckers:= true;
   FCheckersSize:= 8;
@@ -279,19 +279,19 @@ begin
     DoScroll;
   end
   else
-  if (Shift = [FKeyModifierHorzScroll]) then
+  if (Shift = [FModifierMouseHorzScroll]) then
   begin
     with HorzScrollBar do
       Position:= Position - cImageLineSize;
     DoScroll;
   end
   else
-  if (Shift = [FKeyModifierZoom]) or FImageMouseDown then
+  if (Shift = [FModifierMouseZoom]) or FMouseDown then
   begin
-    IncreaseImageScale(True);
-    FImageDragging:= False;
-    if FImageMouseDown then
-      Screen.Cursor:= FImageScaleCursor;
+    IncreaseImageZoom(True);
+    FDragging:= False;
+    if FMouseDown then
+      Screen.Cursor:= FCursorZoom;
   end;
 
   Handled:= True;
@@ -307,19 +307,19 @@ begin
     DoScroll;
   end
   else
-  if (Shift = [FKeyModifierHorzScroll]) then
+  if (Shift = [FModifierMouseHorzScroll]) then
   begin
     with HorzScrollBar do
       Position:= Position + cImageLineSize;
     DoScroll;
   end
   else
-  if (Shift = [FKeyModifierZoom]) or FImageMouseDown then
+  if (Shift = [FModifierMouseZoom]) or FMouseDown then
   begin
-    IncreaseImageScale(False);
-    FImageDragging:= False;
-    if FImageMouseDown then
-      Screen.Cursor:= FImageScaleCursor;
+    IncreaseImageZoom(False);
+    FDragging:= False;
+    if FMouseDown then
+      Screen.Cursor:= FCursorZoom;
   end;
 
   Handled:= True;
@@ -537,7 +537,7 @@ begin
 
   AutoScroll:= not FImageFit;
 
-  FImage.AutoSize:= (not FImageFit) and (FImageScale = 100);
+  FImage.AutoSize:= (not FImageFit) and (FImageZoom = 100);
   FImage.Stretch:= not FImage.AutoSize;
 
   {
@@ -552,12 +552,12 @@ begin
     end;
     }
 
-  //Fit and recalculate ImageScale
+  //Fit and recalculate ImageZoom
   if FImageFit then
   begin
     {
     //Note: code commented in as it causes wrong scaling sometimes.
-    //If image is already fit, don't scale it:
+    //If image is already fit, don't Zoom it:
     if (FImage.Width = CliWidth) and
       (FImage.Height = CliHeight) then
     begin
@@ -566,7 +566,7 @@ begin
     end
     else
     }
-    //Need to scale
+    //Need to Zoom
     begin
       NewWidth:= FImageWidth;
       NewHeight:= FImageHeight;
@@ -574,7 +574,7 @@ begin
       if FImageFitOnlyBig and
         (FImageWidth <= CliWidth) and (FImageHeight <= CliHeight) then
       begin
-        FImageScale:= 100;
+        FImageZoom:= 100;
       end
       else
       begin
@@ -591,7 +591,7 @@ begin
             begin
               NewHeight:= CliHeight;
               NewWidth:= Trunc(NewHeight * NImageRatio);
-              FImageScale:= CliHeight * 100 div FImageHeight;
+              FImageZoom:= CliHeight * 100 div FImageHeight;
             end;
           end
           else
@@ -602,7 +602,7 @@ begin
             begin
               NewWidth:= CliWidth;
               NewHeight:= Trunc(NewWidth / NImageRatio);
-              FImageScale:= CliWidth * 100 div FImageWidth;
+              FImageZoom:= CliWidth * 100 div FImageWidth;
             end;
           end;
         end;
@@ -611,8 +611,8 @@ begin
   end //if FImageFit
   else
   begin
-    NewWidth:= Round(FImageWidth * FImageScale / 100);
-    NewHeight:= Round(FImageHeight * FImageScale / 100);
+    NewWidth:= Round(FImageWidth * FImageZoom / 100);
+    NewHeight:= Round(FImageHeight * FImageZoom / 100);
   end;
 
   //Update image position
@@ -680,7 +680,7 @@ begin
   begin
     FImageFit:= AValue;
     if not FImageFit then
-      FImageScale:= 100;
+      FImageZoom:= 100;
     UpdateImagePosition(True);
   end;
 end;
@@ -707,7 +707,7 @@ procedure TATImageBox.UpdateInfo;
 begin
   FImageWidth:= 0;
   FImageHeight:= 0;
-  FImageScale:= 100;
+  FImageZoom:= 100;
 
   FImage.Visible:= true;
 
@@ -732,12 +732,12 @@ begin
   end;
 end;
 
-procedure TATImageBox.SetImageScale(AValue: integer);
+procedure TATImageBox.SetImageZoom(AValue: integer);
 begin
   if (AValue<=0) or (AValue>2000) then exit;
-  if FImageScale <> AValue then
+  if FImageZoom <> AValue then
   begin
-    FImageScale:= AValue;
+    FImageZoom:= AValue;
     FImageFit:= False;
     HorzScrollBar.Position:= 0;
     VertScrollBar.Position:= 0;
@@ -767,12 +767,12 @@ begin
 
   if (Button = mbLeft) then
   begin
-    FImageMouseDown:= True;
-    if FImageDrag then
+    FMouseDown:= True;
+    if FDrag then
     begin
-      FImageDragging:= True;
-      FImageDraggingPoint:= Point(X, Y);
-      Screen.Cursor:= FImageDragCursor;
+      FDragging:= True;
+      FDraggingPoint:= Point(X, Y);
+      Screen.Cursor:= FCursorDrag;
     end;
   end;
 end;
@@ -781,41 +781,41 @@ procedure TATImageBox.ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
 begin
   if (Button = mbLeft) then
   begin
-    FImageMouseDown:= False;
-    FImageDragging:= False;
+    FMouseDown:= False;
+    FDragging:= False;
     Screen.Cursor:= crDefault;
   end;
 end;
 
 procedure TATImageBox.ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
 begin
-  if FImageDrag and FImageDragging then
+  if FDrag and FDragging then
   begin
-    HorzScrollBar.Position:= HorzScrollBar.Position + (FImageDraggingPoint.X - X);
-    VertScrollBar.Position:= VertScrollBar.Position + (FImageDraggingPoint.Y - Y);
+    HorzScrollBar.Position:= HorzScrollBar.Position + (FDraggingPoint.X - X);
+    VertScrollBar.Position:= VertScrollBar.Position + (FDraggingPoint.Y - Y);
     DoScroll;
   end;
 end;
 
-procedure TATImageBox.IncreaseImageScale(AIncrement: boolean);
+procedure TATImageBox.IncreaseImageZoom(AIncrement: boolean);
 var
   i: integer;
 begin
   if AIncrement then
   begin
-    for i:= Low(cViewerImageScales) to High(cViewerImageScales) do
-      if cViewerImageScales[i] > ImageScale then
+    for i:= Low(cImageboxZooms) to High(cImageboxZooms) do
+      if cImageboxZooms[i] > ImageZoom then
       begin
-        ImageScale:= cViewerImageScales[i];
+        ImageZoom:= cImageboxZooms[i];
         Break
       end;
   end
   else
   begin
-    for i:= High(cViewerImageScales) downto Low(cViewerImageScales) do
-      if cViewerImageScales[i] < ImageScale then
+    for i:= High(cImageboxZooms) downto Low(cImageboxZooms) do
+      if cImageboxZooms[i] < ImageZoom then
       begin
-        ImageScale:= cViewerImageScales[i];
+        ImageZoom:= cImageboxZooms[i];
         Break
       end;
   end;

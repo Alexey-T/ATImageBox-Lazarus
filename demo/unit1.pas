@@ -71,7 +71,7 @@ end;
 
 procedure TForm1.UpdateStatus(Sender: TObject);
 begin
-  LabelStatus.Caption:= IntToStr(box.ImageScale)+'%';
+  LabelStatus.Caption:= IntToStr(box.ImageZoom)+'%';
 end;
 
 procedure TForm1.chkFitToWindowChange(Sender: TObject);
