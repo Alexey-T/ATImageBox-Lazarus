@@ -57,6 +57,8 @@ type
     FInitScrollbarSize: integer;
     FCheckers: boolean;
     FCheckersSize: integer;
+    FCheckersColor1: TColor;
+    FCheckersColor2: TColor;
 
     FOnScroll: TNotifyEvent;
     FOnScrollAlt: TATScrollAltEvent;
@@ -77,6 +79,8 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure MouseWheelDown(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
+    procedure SetCheckersColor1(AValue: TColor);
+    procedure SetCheckersColor2(AValue: TColor);
     procedure SetCheckersSize(AValue: integer);
     procedure UpdateImagePosition(AResetPosition: Boolean = False);
     procedure SetImageFit(AValue: Boolean);
@@ -127,6 +131,8 @@ type
     property OptKeyModifierHorzScroll: TShiftStateEnum read FKeyModifierHorzScroll write FKeyModifierHorzScroll default ssShift;
     property OptCheckers: boolean read FCheckers write SetCheckers default true;
     property OptChechersSize: integer read FCheckersSize write SetCheckersSize default 8;
+    property OptCheckersColor1: TColor read FCheckersColor1 write SetCheckersColor1 default clWhite;
+    property OptCheckersColor2: TColor read FCheckersColor2 write SetCheckersColor2 default clLtGray;
 
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
     property OnScrollAlt: TATScrollAltEvent read FOnScrollAlt write FOnScrollAlt;
@@ -195,6 +201,8 @@ begin
 
   FCheckers:= true;
   FCheckersSize:= 8;
+  FCheckersColor1:= clWhite;
+  FCheckersColor2:= clLtGray;
 
   FImage:= TImage.Create(Self);
   with FImage do
@@ -312,6 +320,20 @@ begin
   end;
 
   Handled:= True;
+end;
+
+procedure TATImageBox.SetCheckersColor1(AValue: TColor);
+begin
+  if FCheckersColor1= AValue then Exit;
+  FCheckersColor1:= AValue;
+  FImage.Invalidate;
+end;
+
+procedure TATImageBox.SetCheckersColor2(AValue: TColor);
+begin
+  if FCheckersColor2= AValue then Exit;
+  FCheckersColor2:= AValue;
+  FImage.Invalidate;
 end;
 
 procedure TATImageBox.SetCheckersSize(AValue: integer);
@@ -859,8 +881,8 @@ begin
     ARect.Right-ARect.Left,
     ARect.Bottom-ARect.Top,
     FCheckersSize,
-    clWhite,
-    clLtGray
+    FCheckersColor1,
+    FCheckersColor2
     );
 end;
 
