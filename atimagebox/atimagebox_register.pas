@@ -11,7 +11,8 @@ procedure Register;
 
 implementation
 
-{ Registration }
+{$R res/atimagebox.dcr}
+
 procedure Register;
 begin
   RegisterComponents('Misc', [TATImageBox]);
