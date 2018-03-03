@@ -1,7 +1,7 @@
 {
 ATImageBox for Lazarus
 Copyright (C) Alexey Torgashin, uvviewsoft.com
-License: MPL 2.0
+License: MPL 2.0 or LGPL
 }
 
 unit ATImageBox;
@@ -19,7 +19,7 @@ uses
   Math;
 
 const
-  cViewerImageScales: array[1 .. 33] of Integer = (
+  cViewerImageScales: array[1..33] of integer = (
     1, 2, 4, 7, 10, 15, 20, 25, 30,
     40, 50, 60, 70, 80, 90, 100,
     125, 150, 175, 200, 250, 300, 350, 400, 450, 500,
@@ -27,7 +27,7 @@ const
 
 
 type
-  TATScrollAltEvent = procedure(Sender: TObject; Inc: Boolean) of object;
+  TATScrollAltEvent = procedure(Sender: TObject; Inc: boolean) of object;
 
 type
 
@@ -35,23 +35,23 @@ type
 
   TATImageBox = class(TScrollBox)
   private
-    FFocusable: Boolean;
+    FFocusable: boolean;
     FImage: TImage;
-    FImageWidth: Integer;
-    FImageHeight: Integer;
+    FImageWidth: integer;
+    FImageHeight: integer;
     FImageFit,
     FImageFitOnlyBig,
     FImageFitWidth,
     FImageFitHeight,
-    FImageCenter: Boolean;
-    FImageScale: Integer;
-    FImageKeepPosition: Boolean;
-    FImageDrag: Boolean;
+    FImageCenter: boolean;
+    FImageScale: integer;
+    FImageKeepPosition: boolean;
+    FImageDrag: boolean;
     FImageDragCursor: TCursor;
     FImageScaleCursor: TCursor;
-    FImageDragging: Boolean;
+    FImageDragging: boolean;
     FImageDraggingPoint: TPoint;
-    FImageMouseDown: Boolean;
+    FImageMouseDown: boolean;
     FKeyModifierZoom: TShiftStateEnum;
     FKeyModifierHorzScroll: TShiftStateEnum;
     FInitScrollbarSize: integer;
@@ -73,40 +73,40 @@ type
 
     procedure SetCheckers(AValue: boolean);
     procedure DoScroll;
-    procedure DoScrollAlt(AInc: Boolean);
+    procedure DoScrollAlt(AInc: boolean);
     procedure DoOptionsChange;
     procedure MouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
+      MousePos: TPoint; var Handled: boolean);
     procedure MouseWheelDown(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
+      MousePos: TPoint; var Handled: boolean);
     procedure SetCheckersColor1(AValue: TColor);
     procedure SetCheckersColor2(AValue: TColor);
     procedure SetCheckersSize(AValue: integer);
-    procedure UpdateImagePosition(AResetPosition: Boolean = False);
-    procedure SetImageFit(AValue: Boolean);
-    procedure SetImageFitOnlyBig(AValue: Boolean);
-    procedure SetImageFitWidth(AValue: Boolean);
-    procedure SetImageFitHeight(AValue: Boolean);
-    procedure SetImageCenter(AValue: Boolean);
-    procedure SetImageScale(AValue: Integer);
-    procedure ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure UpdateImagePosition(AResetPosition: boolean = False);
+    procedure SetImageFit(AValue: boolean);
+    procedure SetImageFitOnlyBig(AValue: boolean);
+    procedure SetImageFitWidth(AValue: boolean);
+    procedure SetImageFitHeight(AValue: boolean);
+    procedure SetImageCenter(AValue: boolean);
+    procedure SetImageScale(AValue: integer);
+    procedure ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+    procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+    procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
     procedure ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
     function GetPicture: TPicture;
 
   public
     constructor Create(AOwner: TComponent); override;
     procedure LoadFromFile(const AFileName: string);
-    procedure LoadBitmap(ABitmap: TBitmap; ATransp: Boolean);
+    procedure LoadBitmap(ABitmap: TBitmap; ATransp: boolean);
     procedure LoadPicture(APicture: TPicture);
     procedure Clear;
     procedure UpdateInfo;
-    procedure IncreaseImageScale(AIncrement: Boolean);
+    procedure IncreaseImageScale(AIncrement: boolean);
     property Image: TImage read FImage;
-    property ImageWidth: Integer read FImageWidth;
-    property ImageHeight: Integer read FImageHeight;
-    property ImageScale: Integer read FImageScale write SetImageScale;
+    property ImageWidth: integer read FImageWidth;
+    property ImageHeight: integer read FImageHeight;
+    property ImageScale: integer read FImageScale write SetImageScale;
 
   protected
     procedure WMHScroll(var Message: TLMHScroll); message LM_HScroll;
@@ -114,19 +114,19 @@ type
     procedure WMGetDlgCode(var Message: TLMessage); message LM_GETDLGCODE;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Resize; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     procedure Loaded; override;
 
   published
     property Picture: TPicture read GetPicture write LoadPicture;
-    property OptFocusable: Boolean read FFocusable write FFocusable default True;
-    property OptFitToWindow: Boolean read FImageFit write SetImageFit default False;
-    property OptFitOnlyBig: Boolean read FImageFitOnlyBig write SetImageFitOnlyBig default True;
-    property OptFitWidth: Boolean read FImageFitWidth write SetImageFitWidth default False;
-    property OptFitHeight: Boolean read FImageFitHeight write SetImageFitHeight default False;
-    property OptCenter: Boolean read FImageCenter write SetImageCenter default True;
-    property OptKeepPosition: Boolean read FImageKeepPosition write FImageKeepPosition default True;
-    property OptDrag: Boolean read FImageDrag write FImageDrag default True;
+    property OptFocusable: boolean read FFocusable write FFocusable default True;
+    property OptFitToWindow: boolean read FImageFit write SetImageFit default False;
+    property OptFitOnlyBig: boolean read FImageFitOnlyBig write SetImageFitOnlyBig default True;
+    property OptFitWidth: boolean read FImageFitWidth write SetImageFitWidth default False;
+    property OptFitHeight: boolean read FImageFitHeight write SetImageFitHeight default False;
+    property OptCenter: boolean read FImageCenter write SetImageCenter default True;
+    property OptKeepPosition: boolean read FImageKeepPosition write FImageKeepPosition default True;
+    property OptDrag: boolean read FImageDrag write FImageDrag default True;
     property OptCursorDrag: TCursor read FImageDragCursor write FImageDragCursor default crSizeAll;
     property OptCursorScale: TCursor read FImageScaleCursor write FImageScaleCursor default crSizeNS;
     property OptKeyModifierZoom: TShiftStateEnum read FKeyModifierZoom write FKeyModifierZoom default ssModifier;
@@ -251,7 +251,7 @@ begin
     FOnScroll(Self);
 end;
 
-procedure TATImageBox.DoScrollAlt(AInc: Boolean);
+procedure TATImageBox.DoScrollAlt(AInc: boolean);
 begin
   if Assigned(FOnScrollAlt) then
     FOnScrollAlt(Self, AInc);
@@ -270,7 +270,7 @@ begin
 end;
 
 procedure TATImageBox.MouseWheelUp(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
+  MousePos: TPoint; var Handled: boolean);
 begin
   if (Shift = []) then
   begin
@@ -298,7 +298,7 @@ begin
 end;
 
 procedure TATImageBox.MouseWheelDown(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
+  MousePos: TPoint; var Handled: boolean);
 begin
   if (Shift = []) then
   begin
@@ -353,7 +353,7 @@ end;
 
 procedure TATImageBox.KeyDown(var Key: Word; Shift: TShiftState);
 
-  function PageSize(AClientSize: Integer): Integer;
+  function PageSize(AClientSize: integer): integer;
   begin
     Result:= Max(AClientSize - cImageGapSize, AClientSize div 3 * 2);
   end;
@@ -487,12 +487,12 @@ begin
 end;
 
 
-procedure TATImageBox.UpdateImagePosition(AResetPosition: Boolean = False);
+procedure TATImageBox.UpdateImagePosition(AResetPosition: boolean = False);
 var
-  bKeepPosition: Boolean;
+  bKeepPosition: boolean;
   CliWidth, CliHeight,
   NewWidth, NewHeight, NewLeft, NewTop,
-  ScrollMaxX, ScrollMaxY: Integer;
+  ScrollMaxX, ScrollMaxY: integer;
   NRatio, NImageRatio, CenterRatioX, CenterRatioY: Double;
   NScrollbarSize: integer;
 begin
@@ -674,7 +674,7 @@ begin
   DoScroll;
 end;
 
-procedure TATImageBox.SetImageFit(AValue: Boolean);
+procedure TATImageBox.SetImageFit(AValue: boolean);
 begin
   if AValue <> FImageFit then
   begin
@@ -685,7 +685,7 @@ begin
   end;
 end;
 
-procedure TATImageBox.SetImageFitOnlyBig(AValue: Boolean);
+procedure TATImageBox.SetImageFitOnlyBig(AValue: boolean);
 begin
   if AValue <> FImageFitOnlyBig then
   begin
@@ -694,7 +694,7 @@ begin
   end;
 end;
 
-procedure TATImageBox.SetImageCenter(AValue: Boolean);
+procedure TATImageBox.SetImageCenter(AValue: boolean);
 begin
   if AValue <> FImageCenter then
   begin
@@ -732,7 +732,7 @@ begin
   end;
 end;
 
-procedure TATImageBox.SetImageScale(AValue: Integer);
+procedure TATImageBox.SetImageScale(AValue: integer);
 begin
   if (AValue<=0) or (AValue>2000) then exit;
   if FImageScale <> AValue then
@@ -746,7 +746,7 @@ begin
   end;
 end;
 
-procedure TATImageBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TATImageBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   inherited;
 
@@ -760,7 +760,7 @@ begin
   UpdateInfo;
 end;
 
-procedure TATImageBox.ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TATImageBox.ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   if FFocusable then
     SetFocus;
@@ -777,7 +777,7 @@ begin
   end;
 end;
 
-procedure TATImageBox.ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TATImageBox.ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   if (Button = mbLeft) then
   begin
@@ -787,7 +787,7 @@ begin
   end;
 end;
 
-procedure TATImageBox.ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TATImageBox.ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
 begin
   if FImageDrag and FImageDragging then
   begin
@@ -797,9 +797,9 @@ begin
   end;
 end;
 
-procedure TATImageBox.IncreaseImageScale(AIncrement: Boolean);
+procedure TATImageBox.IncreaseImageScale(AIncrement: boolean);
 var
-  i: Integer;
+  i: integer;
 begin
   if AIncrement then
   begin
@@ -828,7 +828,7 @@ begin
 end;
 
 
-procedure TATImageBox.SetImageFitWidth(AValue: Boolean);
+procedure TATImageBox.SetImageFitWidth(AValue: boolean);
 begin
   if AValue <> FImageFitWidth then
   begin
@@ -839,7 +839,7 @@ begin
   end;
 end;
 
-procedure TATImageBox.SetImageFitHeight(AValue: Boolean);
+procedure TATImageBox.SetImageFitHeight(AValue: boolean);
 begin
   if AValue <> FImageFitHeight then
   begin
@@ -856,7 +856,7 @@ begin
   UpdateInfo;
 end;
 
-procedure TATImageBox.LoadBitmap(ABitmap: TBitmap; ATransp: Boolean);
+procedure TATImageBox.LoadBitmap(ABitmap: TBitmap; ATransp: boolean);
 begin
   Clear;
   FImage.Picture.Assign(ABitmap);
