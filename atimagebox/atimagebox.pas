@@ -94,14 +94,13 @@ type
     procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
     function GetPicture: TPicture;
-    procedure SetPicture(AValue: TPicture);
 
   public
     constructor Create(AOwner: TComponent); override;
-    procedure LoadFromFile(const FN: string);
+    procedure LoadFromFile(const AFileName: string);
     procedure LoadBitmap(ABitmap: TBitmap; ATransp: Boolean);
     procedure LoadPicture(APicture: TPicture);
-    procedure Unload;
+    procedure Clear;
     procedure UpdateInfo;
     procedure IncreaseImageScale(AIncrement: Boolean);
     property Image: TImage read FImage;
@@ -119,7 +118,7 @@ type
     procedure Loaded; override;
 
   published
-    property Picture: TPicture read GetPicture write SetPicture;
+    property Picture: TPicture read GetPicture write LoadPicture;
     property OptFocusable: Boolean read FFocusable write FFocusable default True;
     property OptFitToWindow: Boolean read FImageFit write SetImageFit default False;
     property OptFitOnlyBig: Boolean read FImageFitOnlyBig write SetImageFitOnlyBig default True;
@@ -759,7 +758,6 @@ procedure TATImageBox.Loaded;
 begin
   inherited;
   UpdateInfo;
-  UpdateImagePosition(true);
 end;
 
 procedure TATImageBox.ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -852,7 +850,7 @@ begin
   end;
 end;
 
-procedure TATImageBox.Unload;
+procedure TATImageBox.Clear;
 begin
   FImage.Picture:= nil;
   UpdateInfo;
@@ -860,7 +858,7 @@ end;
 
 procedure TATImageBox.LoadBitmap(ABitmap: TBitmap; ATransp: Boolean);
 begin
-  Unload;
+  Clear;
   FImage.Picture.Assign(ABitmap);
   FImage.Transparent:= ATransp;
   UpdateInfo;
@@ -868,27 +866,21 @@ end;
 
 procedure TATImageBox.LoadPicture(APicture: TPicture);
 begin
-  Unload;
+  Clear;
   FImage.Picture.Assign(APicture);
   UpdateInfo;
 end;
 
-procedure TATImageBox.LoadFromFile(const FN: string);
+procedure TATImageBox.LoadFromFile(const AFileName: string);
 begin
-  Unload;
-  FImage.Picture.LoadFromFile(FN);
+  Clear;
+  FImage.Picture.LoadFromFile(AFileName);
   UpdateInfo;
 end;
 
 function TATImageBox.GetPicture: TPicture;
 begin
   Result:= FImage.Picture;
-end;
-
-procedure TATImageBox.SetPicture(AValue: TPicture);
-begin
-  LoadPicture(AValue);
-  UpdateImagePosition(true);
 end;
 
 procedure TATImageBox.ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
