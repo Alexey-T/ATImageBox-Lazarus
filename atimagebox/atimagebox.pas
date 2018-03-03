@@ -493,8 +493,11 @@ var
   NScrollbarSize: integer;
 begin
   bKeepPosition:= FImageKeepPosition and not AResetPosition;
+
   PicWidth:= ImageWidth;
   PicHeight:= ImageHeight;
+  if PicWidth=0 then exit;
+  if PicHeight=0 then exit;
 
   if FImageFit then
     NScrollbarSize:= 0
@@ -548,8 +551,7 @@ begin
     end
     else
     begin
-      if (CliWidth > 0) and (CliHeight > 0) and
-        (PicWidth > 0) and (PicHeight > 0) then
+      if (CliWidth > 0) and (CliHeight > 0) then
       begin
         NRatio:= CliWidth / CliHeight;
         NImageRatio:= PicWidth / PicHeight;
