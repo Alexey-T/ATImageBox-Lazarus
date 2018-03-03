@@ -43,6 +43,8 @@ type
     FImageFitHeight,
     FImageCenter: boolean;
     FImageZoom: integer;
+    FImageZoomMin: integer;
+    FImageZoomMax: integer;
     FImageKeepPosition: boolean;
     FCursorDrag: TCursor;
     FCursorZoom: TCursor;
@@ -123,6 +125,8 @@ type
     property CursorDrag: TCursor read FCursorDrag write FCursorDrag default crSizeAll;
     property CursorZoom: TCursor read FCursorZoom write FCursorZoom default crSizeNS;
     property OptFocusable: boolean read FFocusable write FFocusable default True;
+    property OptZoomMin: integer read FImageZoomMin write FImageZoomMin default 1;
+    property OptZoomMax: integer read FImageZoomMax write FImageZoomMax default 1600;
     property OptFitToWindow: boolean read FImageFit write SetImageFit default False;
     property OptFitOnlyBig: boolean read FImageFitOnlyBig write SetImageFitOnlyBig default True;
     property OptFitWidth: boolean read FImageFitWidth write SetImageFitWidth default False;
@@ -188,6 +192,8 @@ begin
   FImageFitHeight:= False;
   FImageCenter:= True;
   FImageZoom:= 100;
+  FImageZoomMin:= 1;
+  FImageZoomMax:= 1600;
   FImageKeepPosition:= True;
   FDrag:= True;
   FCursorDrag:= crSizeAll;
@@ -700,8 +706,13 @@ end;
 
 procedure TATImageBox.SetImageZoom(AValue: integer);
 begin
-  if (AValue<=0) or (AValue>2000) then exit;
-  if FImageZoom <> AValue then
+  if AValue<=0 then exit;
+  if AValue<FImageZoomMin then
+    AValue:= FImageZoomMin;
+  if AValue>FImageZoomMax then
+    AValue:= FImageZoomMax;
+
+  if AValue<>FImageZoom then
   begin
     FImageZoom:= AValue;
     FImageFit:= False;
