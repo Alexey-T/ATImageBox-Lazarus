@@ -55,6 +55,7 @@ type
     FKeyModifierZoom: TShiftStateEnum;
     FKeyModifierHorzScroll: TShiftStateEnum;
     FInitScrollbarSize: integer;
+    FCheckers: boolean;
 
     FOnScroll: TNotifyEvent;
     FOnScrollAlt: TATScrollAltEvent;
@@ -67,6 +68,7 @@ type
     FOldSelfW: integer;
     FOldSelfH: integer;
 
+    procedure SetCheckers(AValue: boolean);
     procedure DoScroll;
     procedure DoScrollAlt(AInc: Boolean);
     procedure DoOptionsChange;
@@ -84,7 +86,7 @@ type
     procedure ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure ImagePanelPaint(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
+    procedure ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -121,6 +123,7 @@ type
     property OptCursorScale: TCursor read FImageScaleCursor write FImageScaleCursor default crSizeNS;
     property OptKeyModifierZoom: TShiftStateEnum read FKeyModifierZoom write FKeyModifierZoom default ssModifier;
     property OptKeyModifierHorzScroll: TShiftStateEnum read FKeyModifierHorzScroll write FKeyModifierHorzScroll default ssShift;
+    property OptCheckers: boolean read FCheckers write SetCheckers default true;
 
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
     property OnScrollAlt: TATScrollAltEvent read FOnScrollAlt write FOnScrollAlt;
@@ -186,6 +189,7 @@ begin
 
   FKeyModifierZoom:= ssModifier;
   FKeyModifierHorzScroll:= ssShift;
+  FCheckers:= true;
 
   FImage:= TImage.Create(Self);
   with FImage do
@@ -196,7 +200,7 @@ begin
     OnMouseDown:= @ImageMouseDown;
     OnMouseUp:= @ImageMouseUp;
     OnMouseMove:= @ImageMouseMove;
-    OnPaintBackground:= @ImagePanelPaint;
+    OnPaintBackground:= @ImagePaintBackground;
   end;
 
   //Init event handlers
@@ -209,6 +213,19 @@ begin
     FInitScrollbarSize:= Width;
   finally
     Free
+  end;
+end;
+
+procedure TATImageBox.SetCheckers(AValue: boolean);
+begin
+  if FCheckers<>AValue then
+  begin
+    FCheckers:= AValue;
+    if FCheckers then
+      FImage.OnPaintBackground:= @ImagePaintBackground
+    else
+      FImage.OnPaintBackground:= nil;
+    FImage.Invalidate;
   end;
 end;
 
@@ -823,7 +840,7 @@ begin
   Result:= FImage.Picture;
 end;
 
-procedure TATImageBox.ImagePanelPaint(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
+procedure TATImageBox.ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
 begin
   DoPaintCheckers(
     ACanvas,

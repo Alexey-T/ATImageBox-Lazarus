@@ -13,6 +13,7 @@ type
 
   TForm1 = class(TForm)
     btnOpen: TButton;
+    chkCheckers: TCheckBox;
     chkFitBig: TCheckBox;
     chkFitToWindow: TCheckBox;
     chkCenter: TCheckBox;
@@ -22,6 +23,7 @@ type
     Panel2: TPanel;
     procedure btnOpenClick(Sender: TObject);
     procedure chkCenterChange(Sender: TObject);
+    procedure chkCheckersChange(Sender: TObject);
     procedure chkFitBigChange(Sender: TObject);
     procedure chkFitToWindowChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -73,6 +75,11 @@ end;
 procedure TForm1.chkCenterChange(Sender: TObject);
 begin
   box.OptCenter:= chkCenter.Checked;
+end;
+
+procedure TForm1.chkCheckersChange(Sender: TObject);
+begin
+  box.OptCheckers:= chkCheckers.Checked;
 end;
 
 procedure TForm1.btnOpenClick(Sender: TObject);
