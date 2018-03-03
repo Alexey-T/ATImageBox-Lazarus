@@ -485,16 +485,16 @@ end;
 procedure TATImageBox.UpdateImagePosition(AResetPosition: boolean = False);
 var
   bKeepPosition: boolean;
+  PicWidth, PicHeight,
   CliWidth, CliHeight,
   NewWidth, NewHeight, NewLeft, NewTop,
   ScrollMaxX, ScrollMaxY: integer;
-  FImageWidth, FImageHeight: integer;
   NRatio, NImageRatio, CenterRatioX, CenterRatioY: Double;
   NScrollbarSize: integer;
 begin
   bKeepPosition:= FImageKeepPosition and not AResetPosition;
-  FImageWidth:= ImageWidth;
-  FImageHeight:= ImageHeight;
+  PicWidth:= ImageWidth;
+  PicHeight:= ImageHeight;
 
   if FImageFit then
     NScrollbarSize:= 0
@@ -526,7 +526,6 @@ begin
       CenterRatioY:= (CliHeight div 2 + VertScrollBar.Position) / FImage.Height;
   end;
 
-  //Set controls params
   if not bKeepPosition then
   begin
     HorzScrollBar.Position:= 0;
@@ -534,57 +533,55 @@ begin
   end;
 
   AutoScroll:= not FImageFit;
-
-  FImage.AutoSize:= (not FImageFit) and (FImageZoom = 100);
+  FImage.AutoSize:= (not FImageFit) and (FImageZoom=100);
   FImage.Stretch:= not FImage.AutoSize;
 
-  //Fit and recalculate ImageZoom
   if FImageFit then
   begin
-      NewWidth:= FImageWidth;
-      NewHeight:= FImageHeight;
+    NewWidth:= PicWidth;
+    NewHeight:= PicHeight;
 
-      if FImageFitOnlyBig and
-        (FImageWidth <= CliWidth) and (FImageHeight <= CliHeight) then
+    if FImageFitOnlyBig and
+      (PicWidth <= CliWidth) and (PicHeight <= CliHeight) then
+    begin
+      FImageZoom:= 100;
+    end
+    else
+    begin
+      if (CliWidth > 0) and (CliHeight > 0) and
+        (PicWidth > 0) and (PicHeight > 0) then
       begin
-        FImageZoom:= 100;
-      end
-      else
-      begin
-        if (CliWidth > 0) and (CliHeight > 0) and
-          (FImageWidth > 0) and (FImageHeight > 0) then
+        NRatio:= CliWidth / CliHeight;
+        NImageRatio:= PicWidth / PicHeight;
+        if ((NRatio >= NImageRatio) and (not FImageFitWidth)) or FImageFitHeight then
         begin
-          NRatio:= CliWidth / CliHeight;
-          NImageRatio:= FImageWidth / FImageHeight;
-          if ((NRatio >= NImageRatio) and (not FImageFitWidth)) or FImageFitHeight then
-          begin
-            //fit height
-            if FImageFitOnlyBig and (CliHeight >= FImageHeight) then begin end
-            else
-            begin
-              NewHeight:= CliHeight;
-              NewWidth:= Trunc(NewHeight * NImageRatio);
-              FImageZoom:= CliHeight * 100 div FImageHeight;
-            end;
-          end
+          //fit height
+          if FImageFitOnlyBig and (CliHeight >= PicHeight) then begin end
           else
           begin
-            //fit width
-            if FImageFitOnlyBig and (CliWidth >= FImageWidth) then begin end
-            else
-            begin
-              NewWidth:= CliWidth;
-              NewHeight:= Trunc(NewWidth / NImageRatio);
-              FImageZoom:= CliWidth * 100 div FImageWidth;
-            end;
+            NewHeight:= CliHeight;
+            NewWidth:= Trunc(NewHeight * NImageRatio);
+            FImageZoom:= CliHeight * 100 div PicHeight;
+          end;
+        end
+        else
+        begin
+          //fit width
+          if FImageFitOnlyBig and (CliWidth >= PicWidth) then begin end
+          else
+          begin
+            NewWidth:= CliWidth;
+            NewHeight:= Trunc(NewWidth / NImageRatio);
+            FImageZoom:= CliWidth * 100 div PicWidth;
           end;
         end;
+      end;
     end
   end //if FImageFit
   else
   begin
-    NewWidth:= Round(FImageWidth * FImageZoom / 100);
-    NewHeight:= Round(FImageHeight * FImageZoom / 100);
+    NewWidth:= Round(PicWidth * FImageZoom / 100);
+    NewHeight:= Round(PicHeight * FImageZoom / 100);
   end;
 
   //Update image position
