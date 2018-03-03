@@ -37,8 +37,6 @@ type
   private
     FFocusable: boolean;
     FImage: TImage;
-    FImageWidth: integer;
-    FImageHeight: integer;
     FImageFit,
     FImageFitOnlyBig,
     FImageFitWidth,
@@ -74,6 +72,8 @@ type
     procedure DoScroll;
     procedure DoScrollAlt(AInc: boolean);
     procedure DoOptionsChange;
+    function GetImageHeight: integer;
+    function GetImageWidth: integer;
     procedure MouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: boolean);
     procedure MouseWheelDown(Sender: TObject; Shift: TShiftState;
@@ -104,8 +104,8 @@ type
     procedure UpdateInfo;
     procedure IncreaseImageZoom(AIncrement: boolean);
     property Image: TImage read FImage;
-    property ImageWidth: integer read FImageWidth;
-    property ImageHeight: integer read FImageHeight;
+    property ImageWidth: integer read GetImageWidth;
+    property ImageHeight: integer read GetImageHeight;
     property ImageZoom: integer read FImageZoom write SetImageZoom;
 
   protected
@@ -185,8 +185,6 @@ begin
   FImageFitWidth:= False;
   FImageFitHeight:= False;
   FImageCenter:= True;
-  FImageWidth:= 0;
-  FImageHeight:= 0;
   FImageZoom:= 100;
   FImageKeepPosition:= True;
   FDrag:= True;
@@ -490,10 +488,13 @@ var
   CliWidth, CliHeight,
   NewWidth, NewHeight, NewLeft, NewTop,
   ScrollMaxX, ScrollMaxY: integer;
+  FImageWidth, FImageHeight: integer;
   NRatio, NImageRatio, CenterRatioX, CenterRatioY: Double;
   NScrollbarSize: integer;
 begin
   bKeepPosition:= FImageKeepPosition and not AResetPosition;
+  FImageWidth:= ImageWidth;
+  FImageHeight:= ImageHeight;
 
   if FImageFit then
     NScrollbarSize:= 0
@@ -540,19 +541,6 @@ begin
   //Fit and recalculate ImageZoom
   if FImageFit then
   begin
-    {
-    //Note: code commented in as it causes wrong scaling sometimes.
-    //If image is already fit, don't Zoom it:
-    if (FImage.Width = CliWidth) and
-      (FImage.Height = CliHeight) then
-    begin
-      NewWidth:= FImage.Width;
-      NewHeight:= FImage.Height;
-    end
-    else
-    }
-    //Need to Zoom
-    begin
       NewWidth:= FImageWidth;
       NewHeight:= FImageHeight;
 
@@ -591,7 +579,6 @@ begin
             end;
           end;
         end;
-      end
     end
   end //if FImageFit
   else
@@ -690,19 +677,11 @@ end;
 
 procedure TATImageBox.UpdateInfo;
 begin
-  FImageWidth:= 0;
-  FImageHeight:= 0;
   FImageZoom:= 100;
-
   FImage.Visible:= true;
 
   if Assigned(FImage.Picture) and Assigned(FImage.Picture.Graphic) then
-  begin
-    FImageWidth:= FImage.Picture.Width;
-    FImageHeight:= FImage.Picture.Height;
-
     UpdateImagePosition(True);
-  end;
 end;
 
 procedure TATImageBox.Resize;
@@ -810,6 +789,22 @@ procedure TATImageBox.DoOptionsChange;
 begin
   if Assigned(FOnOptionsChange) then
     FOnOptionsChange(Self);
+end;
+
+function TATImageBox.GetImageHeight: integer;
+begin
+  if Assigned(FImage.Picture) then
+    Result:= FImage.Picture.Height
+  else
+    Result:= 0;
+end;
+
+function TATImageBox.GetImageWidth: integer;
+begin
+  if Assigned(FImage.Picture) then
+    Result:= FImage.Picture.Width
+  else
+    Result:= 0;
 end;
 
 
