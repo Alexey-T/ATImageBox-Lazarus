@@ -56,6 +56,7 @@ type
     FKeyModifierHorzScroll: TShiftStateEnum;
     FInitScrollbarSize: integer;
     FCheckers: boolean;
+    FCheckersSize: integer;
 
     FOnScroll: TNotifyEvent;
     FOnScrollAlt: TATScrollAltEvent;
@@ -76,6 +77,7 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure MouseWheelDown(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
+    procedure SetCheckersSize(AValue: integer);
     procedure UpdateImagePosition(AResetPosition: Boolean = False);
     procedure SetImageFit(AValue: Boolean);
     procedure SetImageFitOnlyBig(AValue: Boolean);
@@ -124,6 +126,7 @@ type
     property OptKeyModifierZoom: TShiftStateEnum read FKeyModifierZoom write FKeyModifierZoom default ssModifier;
     property OptKeyModifierHorzScroll: TShiftStateEnum read FKeyModifierHorzScroll write FKeyModifierHorzScroll default ssShift;
     property OptCheckers: boolean read FCheckers write SetCheckers default true;
+    property OptChechersSize: integer read FCheckersSize write SetCheckersSize default 8;
 
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
     property OnScrollAlt: TATScrollAltEvent read FOnScrollAlt write FOnScrollAlt;
@@ -189,7 +192,9 @@ begin
 
   FKeyModifierZoom:= ssModifier;
   FKeyModifierHorzScroll:= ssShift;
+
   FCheckers:= true;
+  FCheckersSize:= 8;
 
   FImage:= TImage.Create(Self);
   with FImage do
@@ -307,6 +312,13 @@ begin
   end;
 
   Handled:= True;
+end;
+
+procedure TATImageBox.SetCheckersSize(AValue: integer);
+begin
+  if FCheckersSize=AValue then Exit;
+  FCheckersSize:= AValue;
+  FImage.Invalidate;
 end;
 
 procedure TATImageBox.WMGetDlgCode(var Message: TLMessage);
@@ -846,7 +858,7 @@ begin
     ACanvas,
     ARect.Right-ARect.Left,
     ARect.Bottom-ARect.Top,
-    8,
+    FCheckersSize,
     clWhite,
     clLtGray
     );

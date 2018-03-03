@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ExtDlgs, atimagebox;
+  ExtDlgs, Spin, atimagebox;
 
 type
   { TForm1 }
@@ -21,12 +21,14 @@ type
     Dlg: TOpenPictureDialog;
     Panel1: TPanel;
     Panel2: TPanel;
+    edCheckersSize: TSpinEdit;
     procedure btnOpenClick(Sender: TObject);
     procedure chkCenterChange(Sender: TObject);
     procedure chkCheckersChange(Sender: TObject);
     procedure chkFitBigChange(Sender: TObject);
     procedure chkFitToWindowChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure edCheckersSizeChange(Sender: TObject);
   private
     box: TATImagebox;
     FDirImages: string;
@@ -60,6 +62,11 @@ begin
   fn:= FDirImages+DirectorySeparator+'test.jpg';
   if FileExists(fn) then
     box.LoadFromFile(fn);
+end;
+
+procedure TForm1.edCheckersSizeChange(Sender: TObject);
+begin
+  box.OptChechersSize:= edCheckersSize.Value;
 end;
 
 procedure TForm1.UpdateStatus(Sender: TObject);
