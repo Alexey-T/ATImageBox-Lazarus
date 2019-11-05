@@ -15,7 +15,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Misc', [TATImageBox]);
+  RegisterComponents('AT Controls', [TATImageBox]);
 end;
 
 end.
