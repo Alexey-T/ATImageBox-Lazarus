@@ -760,12 +760,19 @@ end;
 
 procedure TATImageBox.ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
 var
+  bAllowX, bAllowY: boolean;
   P: TPoint;
 begin
+  bAllowX:= FImage.Width>ClientWidth;
+  bAllowY:= FImage.Height>ClientHeight;
+  if not bAllowX and not bAllowY then exit;
+
   if FDrag and FDragging then
   begin
-    HorzScrollBar.Position:= HorzScrollBar.Position + (FDraggingPoint.X - X);
-    VertScrollBar.Position:= VertScrollBar.Position + (FDraggingPoint.Y - Y);
+    if bAllowX then
+      HorzScrollBar.Position:= HorzScrollBar.Position + (FDraggingPoint.X - X);
+    if bAllowY then
+      VertScrollBar.Position:= VertScrollBar.Position + (FDraggingPoint.Y - Y);
     DoScroll;
   end;
 
