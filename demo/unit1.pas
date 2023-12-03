@@ -57,7 +57,7 @@ begin
   box.BorderStyle:= bsNone;
   box.OptFitToWindow:= true;
   box.OptCenter:= true;
-  box.OnScroll:= @UpdateStatus;
+  box.OnImageResize:= @UpdateStatus;
 
   FDirImages:= ExtractFilePath(Application.ExeName)+DirectorySeparator+'images';
   fn:= FDirImages+DirectorySeparator+'test.jpg';
