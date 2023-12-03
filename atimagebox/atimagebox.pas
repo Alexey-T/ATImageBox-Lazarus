@@ -644,6 +644,7 @@ begin
     if not FImageFit then
       FImageZoom:= 100;
     UpdateImagePosition(True);
+    DoOptionsChange; //indicate zoom is changed
   end;
 end;
 
@@ -653,6 +654,7 @@ begin
   begin
     FImageFitOnlyBig:= AValue;
     UpdateImagePosition(True);
+    DoOptionsChange; //indicate zoom is changed
   end;
 end;
 
@@ -760,12 +762,18 @@ end;
 
 procedure TATImageBox.ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
 var
+  bAllowX, bAllowY: boolean;
   P: TPoint;
 begin
   if FDrag and FDragging then
   begin
-    HorzScrollBar.Position:= HorzScrollBar.Position + (FDraggingPoint.X - X);
-    VertScrollBar.Position:= VertScrollBar.Position + (FDraggingPoint.Y - Y);
+    bAllowX:= FImage.Width>ClientWidth;
+    bAllowY:= FImage.Height>ClientHeight;
+
+    if bAllowX then
+      HorzScrollBar.Position:= HorzScrollBar.Position + (FDraggingPoint.X - X);
+    if bAllowY then
+      VertScrollBar.Position:= VertScrollBar.Position + (FDraggingPoint.Y - Y);
     DoScroll;
   end;
 
